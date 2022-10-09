@@ -1,17 +1,15 @@
 package com.example.task_manager.security.jwt;
 
-import com.example.task_manager.service.UserDetailsImpl;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.*;
+import com.example.task_manager.service.UserDetailsImpl;
 
-import java.util.Date;
+import io.jsonwebtoken.*;
 
 @Component
 public class JwtUtils {
@@ -22,23 +20,21 @@ public class JwtUtils {
     @Value("${taskmanager.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    //создание токена
-    public String generateJwtToken(
-            Authentication authentication) {
+    //сгенерировать токен из имени
+    public String generateJwtToken(UserDetailsImpl userPrincipal) {
+        return generateTokenFromUsername(userPrincipal.getUsername());
+    }
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-        return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
+    public String generateTokenFromUsername(String username) {
+        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)).signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
-
-    //получить имя пользователя из токена
+// получить имя пользователя от jwt
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // проверка токена на валидность
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
