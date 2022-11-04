@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
@@ -130,7 +129,7 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @PostMapping("/refreshtoken")
+    @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 

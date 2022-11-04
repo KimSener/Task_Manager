@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/users/**").permitAll()
                 .antMatchers("/api/Join/**").permitAll()
                 .antMatchers("/api/tasks/**").permitAll()
+                .antMatchers("/api/CurrencyRate/**").permitAll()
                 .anyRequest().authenticated();
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
